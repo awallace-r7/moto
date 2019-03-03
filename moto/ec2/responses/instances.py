@@ -126,6 +126,16 @@ class InstanceResponse(BaseResponse):
 
         return template.render(instance=instance, attribute=attribute, value=value)
 
+    def describe_instance_credit_specifications(self):
+        instance_id = self._get_param('InstanceId')
+        if (None == instance_id): # EC2_INSTANCE_CREDIT_SPECIFICATION_EMPTY
+            return self.response_template(EC2_INSTANCE_CREDIT_SPECIFICATION_EMPTY).render()
+        instance, value = self.ec2_backend.describe_instance(
+            instance_id)
+        template = self.response_template(EC2_INSTANCE_CREDIT_SPECIFICATION)
+        return template.render(instance=instance, value='unlimited')
+
+
     def modify_instance_attribute(self):
         handlers = [self._dot_value_instance_attribute_handler,
                     self._block_device_mapping_handler,
@@ -677,3 +687,23 @@ EC2_DESCRIBE_INSTANCE_TYPES = """<?xml version="1.0" encoding="UTF-8"?>
     {% endfor %}
     </instanceTypeSet>
 </DescribeInstanceTypesResponse>"""
+
+EC2_INSTANCE_CREDIT_SPECIFICATION = """<?xml version="1.0" encoding="UTF-8"?>
+<DescribeInstanceCreditSpecificationResponse xmlns="http://api.outscale.com/wsdl/fcuext/2014-04-15/">
+    <requestId>f8b86168-d034-4e65-b48d-3b84c78e64af</requestId>
+    <InstanceCreditSpecifications>
+    {% for for instance in instances %}
+        <item>
+            <instanceId>{{ instance.id }}</instanceId>
+            <cpuCredits>unlimited</cpuCredits>
+        </item>
+    {% endfor %}
+    </InstanceCreditSpecifications>
+</DescribeInstanceCreditSpecificationResponse>"""
+
+EC2_INSTANCE_CREDIT_SPECIFICATION_EMPTY = """<?xml version="1.0" encoding="UTF-8"?>
+<DescribeInstanceCreditSpecificationResponse xmlns="http://api.outscale.com/wsdl/fcuext/2014-04-15/">
+    <requestId>f8b86168-d034-4e65-b48d-3b84c78e64af</requestId>
+    <InstanceCreditSpecifications>
+    </InstanceCreditSpecifications>
+</DescribeInstanceCreditSpecificationResponse>"""

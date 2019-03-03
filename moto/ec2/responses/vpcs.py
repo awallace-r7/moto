@@ -74,6 +74,12 @@ class VPCs(BaseResponse):
         return template.render(vpc_id=value['vpc_id'], cidr_block=value['cidr_block'],
                                association_id=value['association_id'], cidr_block_state='disassociating')
 
+    def describe_vpc_classic_link(self):
+        return self.response_template(DESCRIBE_VPC_CLASSIC_LINK).render()
+
+    def describe_vpc_classic_link_dns_support(self):
+        return self.response_template(DESCRIBE_VPC_CLASSIC_LINK_DNS_SUPPORT).render()
+
 
 CREATE_VPC_RESPONSE = """
 <CreateVpcResponse xmlns="http://ec2.amazonaws.com/doc/{{doc_date}}/">
@@ -245,3 +251,19 @@ IPV6_DISASSOCIATE_VPC_CIDR_BLOCK_RESPONSE = """
         </ipv6CidrBlockState>
     </ipv6CidrBlockAssociation>
 </DisassociateVpcCidrBlockResponse>"""
+
+DESCRIBE_VPC_CLASSIC_LINK = """
+<DescribeVpcClassicLinkResponse xmlns="http://ec2.amazonaws.com/doc/2016-11-15/">
+    <requestId>33af6c54-1139-4d50-b4f7-15a8example</requestId>
+    <vpcSet>
+    </vpcSet>
+</DescribeVpcClassicLinkResponse>
+"""
+
+DESCRIBE_VPC_CLASSIC_LINK_DNS_SUPPORT = """
+<DescribeVpcClassicLinkDnsSupportResponse xmlns="http://ec2.amazonaws.com/doc/2016-11-15/">
+    <requestId>14eea823-b88b-472a-9225-5f6a54ab1a5c</requestId>
+    <vpcs>
+    </vpcs>
+</DescribeVpcClassicLinkDnsSupportResponse>
+"""
